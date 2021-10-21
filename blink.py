@@ -118,7 +118,7 @@ while True:
         for num in [8,12,16,20]:
             dist_3.append(dist_face_finger(lmList, face_landmarks, 66, num))
 
-        if ((dist_3[0] < 10 or dist_3[1] < 10 or dist_3[2] < 10 or dist_3[3] < 10) and degree2 > 600 and degree2 < 900):
+        if ((dist_3[0] < 20 or dist_3[1] < 20 or dist_3[2] < 20 or dist_3[3] < 20) and degree2 > 600 and degree2 < 900):
             count4 += 1
             if count4 == 40:
                 print("입에 손가락")
@@ -126,7 +126,7 @@ while True:
         else:
             count4 = 0
         
-        # print(count4)
+        # print(dist_3[0])
 
 
         
