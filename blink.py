@@ -31,8 +31,8 @@ def face_size(val1 , val2, face_landmarks):
     y = abs(face_landmarks.part(val1).y - face_landmarks.part(val2).y)
     return (x ** 2 + y ** 2) ** (1/2)
 
-#눈, 손가락끝거리
-def dist_eye_finger(lmList, face_landmarks, val1, val2):
+#얼굴포인트 -  손가락포인트거리
+def dist_face_finger(lmList, face_landmarks, val1, val2):
     x = abs(face_landmarks.part(val1).x - lmList[val2][1])
     y = abs(face_landmarks.part(val1).y - lmList[val2][2])
     return (x ** 2 + y ** 2) ** (1/2)
@@ -40,10 +40,13 @@ def dist_eye_finger(lmList, face_landmarks, val1, val2):
 count = 0
 count2 = 0
 count3 = 0
+count4 = 0
 total = 0
 first = 0
 height = -1
 width = -1
+face_landmarks = 0
+
 while True:
     success,img = cap.read()
     imgGray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -98,10 +101,10 @@ while True:
                 print("손 얼굴안")
                 count2 = 0
         else:
-            count2 = 0
+            count2 = 0        
         
-        dist_1 = dist_eye_finger(lmList, face_landmarks, 40, 8) #왼쪽눈 검지 거리
-        dist_2 = dist_eye_finger(lmList, face_landmarks, 47, 8) #오른쪽눈 검지 거리
+        dist_1 = dist_face_finger(lmList, face_landmarks, 40, 8) #왼쪽눈 검지 거리
+        dist_2 = dist_face_finger(lmList, face_landmarks, 47, 8) #오른쪽눈 검지 거리
         if dist_1 < 15 or dist_2 < 15:
             count3 += 1
             if count3 == 30:
@@ -110,12 +113,27 @@ while True:
         else:
             count3 = 0
 
+        # 입에 손가락    
+        dist_3 = []
+        for num in [8,12,16,20]:
+            dist_3.append(dist_face_finger(lmList, face_landmarks, 66, num))
+
+        if ((dist_3[0] < 10 or dist_3[1] < 10 or dist_3[2] < 10 or dist_3[3] < 10) and degree2 > 600 and degree2 < 900):
+            count4 += 1
+            if count4 == 40:
+                print("입에 손가락")
+                count4 = 0
+        else:
+            count4 = 0
+        
+        # print(count4)
+
 
         
     if first > 1:
         if (height - fis_height + width - fis_width) > 50: ## 첫 화면 얼굴 크기보다 나중 화면 얼굴 크기가 일정 값 이상 커질때
             cv2.putText(img, "go back!", (100, 100),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)    
-        if(eyebrow_y - fis_eyebrow_y) > 50:
+        if(eyebrow_y - fis_eyebrow_y) > 50: ## 첫 화면 눈썹 y좌표보다 나중 화면 눈썹y좌표가 일정 값 이상 커질 때
             cv2.putText(img, "stretch your back!", (100, 100),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)  
     cv2.putText(img, "Blink Count: {}".format(total), (10, 30),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
     # if (height > 0) and (width > 0):
