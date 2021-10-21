@@ -77,9 +77,11 @@ while True:
 
         if first == 0:
             fis_height = face_size(27, 8, face_landmarks) ##첫 화면 세로 크기
+            fis_eyebrow_y = face_landmarks.part(21).y
             first += 1
         else:
             height = face_size(27, 8, face_landmarks) ## 화면속 세로 크기
+            eyebrow_y = face_landmarks.part(21).y
             first += 1
     
     #hand
@@ -107,14 +109,14 @@ while True:
                 count3 = 0
         else:
             count3 = 0
-        
-        print(dist_1)
 
 
         
     if first > 1:
         if (height - fis_height + width - fis_width) > 50: ## 첫 화면 얼굴 크기보다 나중 화면 얼굴 크기가 일정 값 이상 커질때
             cv2.putText(img, "go back!", (100, 100),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)    
+        if(eyebrow_y - fis_eyebrow_y) > 50:
+            cv2.putText(img, "stretch your back!", (100, 100),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)  
     cv2.putText(img, "Blink Count: {}".format(total), (10, 30),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
     # if (height > 0) and (width > 0):
     #     print(fis_height, fis_width, height, width)
